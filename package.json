@@ -8,5 +8,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theashutoshn/note-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/theashutoshn/note-app/issues"
+  },
+  "homepage": "https://github.com/theashutoshn/note-app#readme"
 }

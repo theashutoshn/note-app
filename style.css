@@ -1,0 +1,31 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 800px;
+    margin: auto;
+}
+
+.new-page {
+    margin-top: 20px;
+
+}
+
+.new-page input {
+    border: none;
+}
+
+#add-page-btn {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.all-pages {
+    margin-top: 20px;
+}

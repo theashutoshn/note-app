@@ -1,0 +1,24 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
+.note-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: auto;
+}
+
+#note-title {
+    outline: none;
+}
+
+#note-para {
+    outline: none;
+    white-space: pre-wrap;
+    line-height: 1.2rem;
+
+}
