@@ -1,5 +1,5 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Manrope", sans-serif;
     overflow: hidden;
 }
 
@@ -10,6 +10,10 @@ body {
     align-items: flex-start;
     max-width: 800px;
     margin: auto;
+}
+
+.option {
+    margin-top: 10px;
 }
 
 .page-content {
@@ -24,5 +28,9 @@ body {
     outline: none;
     white-space: pre-wrap;
     line-height: 1.2rem;
+}
 
+p[contenteditable="true"]:empty:before {
+    content: attr(data-placeholder);
+    color: gray;
 }

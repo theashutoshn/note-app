@@ -1,6 +1,42 @@
 body {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Manrope", sans-serif;
 }
+
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px 30px;
+    box-sizing: border-box;
+    color: white;
+    align-items: center;
+    visibility: visible;
+    /* Make navbar visible */
+}
+
+.nav-bar ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-bar li {
+    list-style-type: none;
+    margin-top: 5px;
+    font-size: 28px;
+}
+
+.nav-bar .nav-menu a {
+    text-decoration: none;
+    color: #0f0f0f;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.nav-bar .nav-menu a:hover {
+    color: #5f5f5f;
+}
+
 
 .container {
     display: flex;
@@ -16,18 +52,31 @@ body {
 
 }
 
-.new-page input {
+#new-page-title {
     border: none;
-    font-size: 24px;
+    font-size: 20px;
+}
+
+#new-page-title:focus {
+    outline: none;
+    border-bottom: 0.5px solid #5f5f5f;
 }
 
 #add-page-btn {
     border: none;
     background-color: transparent;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .all-pages {
     margin-top: 20px;
+}
+
+#page-list {
+    text-align: left;
+}
+
+#page-list li {
+    margin-bottom: 5px;
 }

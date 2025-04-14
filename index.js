@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const pageData = {
             title: title,
             heading: title,
-            content: "Loreum Ipsum"
+            content: ""
         };
         localStorage.setItem(pageKey, JSON.stringify(pageData));
 
