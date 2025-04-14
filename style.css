@@ -18,12 +18,14 @@ body {
 
 .new-page input {
     border: none;
+    font-size: 24px;
 }
 
 #add-page-btn {
     border: none;
     background-color: transparent;
     cursor: pointer;
+    font-size: 24px;
 }
 
 .all-pages {
