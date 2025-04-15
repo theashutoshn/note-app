@@ -32,6 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+
+// Timer function
+
 let duration = 15 * 60;
 let timer = duration;
 let interval = null;
@@ -76,3 +79,5 @@ function resetTimer() {
 }
 
 updateTimer();
+
+// Timer function
