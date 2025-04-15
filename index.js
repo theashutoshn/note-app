@@ -18,10 +18,24 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem(pageKey, JSON.stringify(pageData));
 
         const li = document.createElement("li");
+        li.className = "page-item";
         const a = document.createElement("a");
         a.href = `page.html?page=${pageKey}`;
         a.innerText = title;
+
+
+        //delete page
+        const delBtn = document.createElement("span");
+        delBtn.className = "delete-btn";
+        delBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+        delBtn.title = "Delete Page";
+        delBtn.onclick = () => {
+            localStorage.removeItem(pageKey);
+            li.remove();
+        };
+
         li.appendChild(a);
+        li.appendChild(delBtn);
         document.getElementById("page-list").appendChild(li);
 
         titleInput.value = "";
@@ -37,10 +51,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = JSON.parse(localStorage.getItem(key));
         if (data) {
             const li = document.createElement("li");
+            li.className = "page-item";
             const a = document.createElement("a");
             a.href = `page.html?page=${key}`;
             a.innerText = data.title;
+
+            //delete page
+            const delBtn = document.createElement("span");
+            delBtn.className = "delete-btn";
+            delBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+            delBtn.title = "Delete Page";
+            delBtn.onclick = () => {
+                localStorage.removeItem(key);
+                li.remove();
+            };
+
+
             li.appendChild(a);
+            li.appendChild(delBtn);
             list.appendChild(li);
         }
     }
