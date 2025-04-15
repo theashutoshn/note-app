@@ -23,16 +23,14 @@
 <body>
     <div class="note-container">
         <div class="option">
-            <a href="index.html"><i class="fa-solid fa-arrow-left"></i></a>
-            <p>15:00</p>
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <span id="timer" onclick="startTimer()" ondblclick="resetTimer()">15:00</span>
         </div>
         <div class="page-content">
             <h1 contenteditable="true" id="note-title"></h1>
             <p contenteditable="true" id="note-para" data-placeholder="Write something…"></p>
         </div>
     </div>
-
-
 
 
     <script src="page.js"></script>

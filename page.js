@@ -31,3 +31,48 @@ document.addEventListener("DOMContentLoaded", () => {
     paraNew.addEventListener("blur", saveData);
 
 });
+
+let duration = 15 * 60;
+let timer = duration;
+let interval = null;
+let isRunning = false;
+
+function updateTimer() {
+
+    let minutes = parseInt(timer / 60, 10);
+    let seconds = parseInt(timer % 60, 10);
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    document.getElementById("timer").textContent = minutes + ":" + seconds;
+}
+
+function startTimer() {
+
+    if (isRunning) {
+        clearInterval(interval);
+        isRunning = false;
+    } else {
+
+        interval = setInterval(() => {
+            if (timer <= 0) {
+                resetTimer();
+                return;
+            }
+
+            timer--;
+            updateTimer();
+        }, 1000);
+        isRunning = true;
+    }
+}
+
+function resetTimer() {
+    clearInterval(interval);
+    isRunning = false;
+    timer = duration;
+    updateTimer();
+}
+
+updateTimer();

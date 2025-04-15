@@ -21,9 +21,19 @@ body {
     justify-content: space-between;
     align-items: center;
     width: 800px;
-    margin-top: 20px;
+
+    padding-top: 15px;
+    padding-bottom: 15px;
     z-index: 10;
 
+}
+
+.back-btn {
+    color: gray;
+}
+
+.back-btn:hover {
+    color: black;
 }
 
 .page-content {
@@ -43,4 +53,13 @@ body {
 p[contenteditable="true"]:empty:before {
     content: attr(data-placeholder);
     color: gray;
+}
+
+#timer {
+    padding: 10px;
+}
+
+#timer:hover {
+
+    cursor: pointer;
 }
