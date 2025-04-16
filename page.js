@@ -9,15 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    showAllNotesBtn.addEventListener("click", () => {
-        noteSidebar.classList.add("active");
-        renderNotesList();
-    });
-
-    closeSidebarBtn.addEventListener("click", () => {
-        noteSidebar.classList.remove("active");
-    });
-
     const urlParams = new URLSearchParams(window.location.search);
     const pageKey = urlParams.get("page");
     if (pageKey) {
@@ -44,6 +35,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     titleNew.addEventListener("blur", saveData);
     paraNew.addEventListener("blur", saveData);
+
+    showAllNotesBtn.addEventListener("click", () => {
+
+        const isOpen = noteSidebar.classList.contains("active"); //using .contains to check if the element has the "active" class name. For using the same button to open and close sidebar
+
+        if (isOpen) {
+            noteSidebar.classList.remove("active");
+        } else {
+            noteSidebar.classList.add("active");
+            renderNotesList();
+        }
+
+    });
+
+    closeSidebarBtn.addEventListener("click", () => {
+        noteSidebar.classList.remove("active");
+    });
+
 
     function renderNotesList() {
         notesList.innerHTML = "";
