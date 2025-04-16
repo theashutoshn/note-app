@@ -1,7 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const showAllNotesBtn = document.getElementById("showAllNotes");
+    const noteSidebar = document.getElementById("note-sidebar");
+    const closeSidebarBtn = document.getElementById("close-sidebar");
+    const notesList = document.getElementById("notes-list");
 
     const titleNew = document.getElementById("note-title");
     const paraNew = document.getElementById("note-para");
+
+
+
+    showAllNotesBtn.addEventListener("click", () => {
+        noteSidebar.classList.add("active");
+        renderNotesList();
+    });
+
+    closeSidebarBtn.addEventListener("click", () => {
+        noteSidebar.classList.remove("active");
+    });
 
     const urlParams = new URLSearchParams(window.location.search);
     const pageKey = urlParams.get("page");
@@ -29,6 +44,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     titleNew.addEventListener("blur", saveData);
     paraNew.addEventListener("blur", saveData);
+
+    function renderNotesList() {
+        notesList.innerHTML = "";
+
+        for (let i = 1; i <= localStorage.getItem("pageCount"); i++) {
+            const pageKey = `page-${i}`;
+            const noteData = JSON.parse(localStorage.getItem(pageKey));
+
+            if (noteData) {
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+                a.textContent = noteData.title || noteData.heading;
+                a.href = `page.html?page=${pageKey}`;
+
+                const delBtn = document.createElement("span");
+                delBtn.className = "delete-btn";
+                delBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+                delBtn.title = "Delete Page";
+                delBtn.onclick = () => {
+                    localStorage.removeItem(pageKey);
+                    li.remove();
+                };
+
+                li.appendChild(a);
+                li.appendChild(delBtn);
+                notesList.appendChild(li);
+            }
+
+        }
+    }
+
+
+
+
+
 
 });
 
