@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <link rel="stylesheet" href="page.css">
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Goolge Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+</head>
+
+<body>
+    <div class="note-container">
+        <div class="option">
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <span id="timer" onclick="startTimer()" ondblclick="resetTimer()">15:00</span>
+        </div>
+        <div class="page-content">
+            <h1 contenteditable="true" id="note-title"></h1>
+            <p contenteditable="true" id="note-para" data-placeholder="Write something…"></p>
+        </div>
+    </div>
+
+    <div id="note-sidebar">
+        <button id="close-sidebar"><i class="fa-solid fa-xmark"></i></button>
+        <h2>All Notes</h2>
+        <ul id="notes-list"></ul>
+    </div>
+
+    <footer class="footer-wrapper">
+        <div class="footer-content">
+            <span id="showAllNotes"> <i class="fa-solid fa-clock-rotate-left"></i>
+            </span>
+        </div>
+
+    </footer>
+
+    <script src="page.js"></script>
+
+</body>
+
+</html>
