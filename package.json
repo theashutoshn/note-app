@@ -1,9 +1,10 @@
 {
   "name": "note-app",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
   },
   "keywords": [],
   "author": "",
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/theashutoshn/note-app/issues"
   },
-  "homepage": "https://github.com/theashutoshn/note-app#readme"
+  "homepage": "https://github.com/theashutoshn/note-app#readme",
+  "devDependencies": {
+    "electron": "^35.1.5"
+  }
 }
