@@ -11,30 +11,6 @@ body {
     color: #111;
 }
 
-#custom-title-bar {
-    height: 32px;
-    background-color: #f9f9f9;
-    /* Change this to any color */
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 12px;
-    -webkit-app-region: drag;
-    /* Enables window dragging */
-}
-
-#window-controls button {
-    background: none;
-    border: none;
-    color: rgb(0, 0, 0);
-    font-size: 16px;
-    cursor: pointer;
-    -webkit-app-region: no-drag;
-    /* So buttons are clickable */
-}
-
-
 
 /* Navbar */
 .nav-bar {
