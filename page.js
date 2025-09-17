@@ -1,3 +1,7 @@
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     const showAllNotesBtn = document.getElementById("showAllNotes");
     const noteSidebar = document.getElementById("note-sidebar");
@@ -7,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const titleNew = document.getElementById("note-title");
     const paraNew = document.getElementById("note-para");
 
-
+    window.supabase = createClient("https://zanjbmsolrqdaikwzzpl.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbmpibXNvbHJxZGFpa3d6enBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwOTQ5MzEsImV4cCI6MjA3MzY3MDkzMX0.pBd3ArobSnWvCGOuGUEguQe5xz4O-g_gC4Ip-QocbPg");
 
     const urlParams = new URLSearchParams(window.location.search);
     const pageKey = urlParams.get("page");
@@ -22,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // save written data
-    function saveData() {
+    async function saveData() {
         const updateDate = {
             title: titleNew.innerText.trim(),
             heading: titleNew.innerText.trim(),
@@ -31,6 +35,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         localStorage.setItem(pageKey, JSON.stringify(updateDate));
 
+        try {
+            const { data, error } = await window.supabase.from("notes").upsert({ page_key: pageKey, title: updateDate.title, content: updateDate.content }, { onConflict: "page_key" });
+
+            if (error) {
+                console.error("Supabase upsert error", error);
+            } else {
+                console.log("Saved to Supabase:", data)
+            }
+        } catch (e) {
+            console.error("Unexpected error saving to Supabase:", e);
+        }
     }
 
     titleNew.addEventListener("blur", saveData);
@@ -87,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
+    saveData();
 
 });
 

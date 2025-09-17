@@ -1,4 +1,11 @@
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
+
+
+
+
     let pageCount = localStorage.getItem("pageCount") || 0;
 
     function createPage() {
