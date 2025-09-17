@@ -99,7 +99,50 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    document.querySelector('.toolbar').addEventListener('click', (e) => {
+        if (e.target.closest('button')) {
+            const style = e.target.closest('button').dataset.style;
+            applyStyle(style);
+        }
+    });
 
+    function applyStyle(style) {
+        const selection = window.getSelection();
+
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            if (!range.collapsed && isSelectionInsideEditable(selection)) {
+                const span = document.createElement('span');
+
+                switch (style) {
+                    case 'bold':
+                        span.style.fontWeight = 'bold';
+                        break;
+                    case 'italic':
+                        span.style.fontStyle = 'italic';
+                        break;
+                    case 'underline':
+                        span.style.textDecoration = 'underline';
+                        break;
+                    default:
+                        break;
+                }
+                span.appendChild(range.extractContents());
+                range.insertNode(span);
+            }
+        }
+    }
+
+    function isSelectionInsideEditable(selection) {
+        let node = selection.anchorNode;
+        while (node) {
+            if (node.nodeType === Node.ELEMENT_NODE && node.getAttribute('contenteditable') === 'true') {
+                return true;
+            }
+            node = node.parentNode;
+        }
+        return false;
+    }
 
 
     saveData();
