@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+</head>
+
+<body>
+    <h2>Login / Sign up</h2>
+    <form id="auth-form">
+        <input id="email" type="email" placeholder="email" required />
+        <input id="password" type="password" placeholder="password" required />
+        <button type="submit">Continue</button>
+    </form>
+    <button id="logout" style="display:none">Logout</button>
+
+    <script type="module">
+        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+        const supabase = createClient("https://zanjbmsolrqdaikwzzpl.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbmpibXNvbHJxZGFpa3d6enBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwOTQ5MzEsImV4cCI6MjA3MzY3MDkzMX0.pBd3ArobSnWvCGOuGUEguQe5xz4O-g_gC4Ip-QocbPg");
+
+        // If already logged in, go to app
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) location.href = "index.html";
+
+        document.getElementById("auth-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            // Try sign in, otherwise sign up
+            let { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                const { error: upErr } = await supabase.auth.signUp({ email, password });
+                if (upErr) return alert(upErr.message);
+            }
+            location.href = "index.html";
+        });
+    </script>
+</body>
+
+</html>

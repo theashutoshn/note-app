@@ -1,7 +1,5 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
     const showAllNotesBtn = document.getElementById("showAllNotes");
     const noteSidebar = document.getElementById("note-sidebar");
@@ -12,6 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const paraNew = document.getElementById("note-para");
 
     window.supabase = createClient("https://zanjbmsolrqdaikwzzpl.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbmpibXNvbHJxZGFpa3d6enBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwOTQ5MzEsImV4cCI6MjA3MzY3MDkzMX0.pBd3ArobSnWvCGOuGUEguQe5xz4O-g_gC4Ip-QocbPg");
+
+    document.getElementById("logout-btn")?.addEventListener("click", async () => {
+        await window.supabase.auth.signOut();
+        location.href = "auth.html";
+    });
 
     const urlParams = new URLSearchParams(window.location.search);
     const pageKey = urlParams.get("page");
