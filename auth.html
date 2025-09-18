@@ -11,7 +11,8 @@
     <form id="auth-form">
         <input id="email" type="email" placeholder="email" required />
         <input id="password" type="password" placeholder="password" required />
-        <button type="submit">Continue</button>
+        <button id="login" type="submit">Login In</button>
+        <button id="signup" type="submit">Sign Up</button>
     </form>
     <button id="logout" style="display:none">Logout</button>
 
@@ -22,19 +23,41 @@
 
         // If already logged in, go to app
         const { data: { session } } = await supabase.auth.getSession();
-        if (session) location.href = "index.html";
+        if (!session) {
+            throw new Error("Please log in first");
+        } else if (session) location.href = "index.html";
 
-        document.getElementById("auth-form").addEventListener("submit", async (e) => {
+
+
+        document.getElementById("signup").addEventListener("click", async (e) => {
             e.preventDefault();
+
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value;
 
-            // Try sign in, otherwise sign up
-            let { error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await supabase.auth.signUp({ email, password });
             if (error) {
-                const { error: upErr } = await supabase.auth.signUp({ email, password });
-                if (upErr) return alert(upErr.message);
+                console.log(error.message);
+                return
             }
+
+            if (!data.session) {
+                show("Signup successful. Check your email to confirm, then log in.");
+                return;
+            }
+
+
+            location.href = "index.html";
+        });
+
+        document.getElementById("login").addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) { console.log(error.message); return; }
             location.href = "index.html";
         });
     </script>
