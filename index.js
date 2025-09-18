@@ -25,20 +25,31 @@ function init() {
 
         pageCount++;
         localStorage.setItem("pageCount", pageCount);
+        const dateCreated = new Date();
 
         const pageKey = `page-${pageCount}`;
         const pageData = {
             title: title,
             heading: title,
-            content: ""
+            content: "",
+            date: dateCreated
+
         };
         localStorage.setItem(pageKey, JSON.stringify(pageData));
+
+        // timestamp
+        const pageDate = document.createElement("span");
+        pageDate.className = "page-date";
+        pageData.in
+
+
 
         const li = document.createElement("li");
         li.className = "page-item";
         const a = document.createElement("a");
         a.href = `page.html?page=${pageKey}`;
         a.innerText = title;
+
 
 
         //delete page
@@ -51,6 +62,7 @@ function init() {
             li.remove();
         };
 
+        li.appendChild(pageDate);
         li.appendChild(a);
         li.appendChild(delBtn);
         document.getElementById("page-list").appendChild(li);
