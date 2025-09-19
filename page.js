@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem(pageKey, JSON.stringify(updateDate));
 
         try {
-            const { data, error } = await window.supabase.from("notes").upsert({ page_key: pageKey, title: updateDate.title, content: updateDate.content }, { onConflict: "page_key" });
+            const { data, error } = await window.supabase.from("notes").upsert({ page_key: pageKey, title: updateDate.title, content: updateDate.content }, { onConflict: 'user_id, page_key' });
 
             if (error) {
                 console.error("Supabase upsert error", error);
