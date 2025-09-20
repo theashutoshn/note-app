@@ -33,10 +33,6 @@ async function init() {
         const title = titleInput.value.trim();
         if (!title) return;
 
-supabase-auth
-
-        
-dev
 
         // (optional) capture data for debugging
         const { data: insertData, error } = await supabase
@@ -61,10 +57,13 @@ dev
         await loadPages();
     }
 
-    document
-        .getElementById("add-page-btn")
-        ?.addEventListener("click", createPage);
-
+    document.getElementById("add-page-btn")?.addEventListener("click", createPage);
+    titleInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            createPage();
+        }
+    })
     async function loadPages() {
         list.innerHTML = "";
 
