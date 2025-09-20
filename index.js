@@ -33,6 +33,10 @@ async function init() {
         const title = titleInput.value.trim();
         if (!title) return;
 
+supabase-auth
+
+        
+dev
 
         // (optional) capture data for debugging
         const { data: insertData, error } = await supabase
