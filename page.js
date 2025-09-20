@@ -1,6 +1,6 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
 document.addEventListener("DOMContentLoaded", () => {
+    const supabase = window.supabase;
+
     const showAllNotesBtn = document.getElementById("showAllNotes");
     const noteSidebar = document.getElementById("note-sidebar");
     const closeSidebarBtn = document.getElementById("close-sidebar");
@@ -9,37 +9,67 @@ document.addEventListener("DOMContentLoaded", () => {
     const titleNew = document.getElementById("note-title");
     const paraNew = document.getElementById("note-para");
 
-    window.supabase = createClient("https://zanjbmsolrqdaikwzzpl.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbmpibXNvbHJxZGFpa3d6enBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwOTQ5MzEsImV4cCI6MjA3MzY3MDkzMX0.pBd3ArobSnWvCGOuGUEguQe5xz4O-g_gC4Ip-QocbPg");
+
 
     document.getElementById("logout-btn")?.addEventListener("click", async () => {
-        await window.supabase.auth.signOut();
+        await supabase.auth.signOut();
         location.href = "auth.html";
     });
 
     const urlParams = new URLSearchParams(window.location.search);
     const pageKey = urlParams.get("page");
-    if (pageKey) {
-        const data = JSON.parse(localStorage.getItem(pageKey));
-        if (data) {
-            titleNew.innerText = data.title;
-            paraNew.innerText = data.content;
+
+    let userId = null;
+
+    async function loadNotes() {
+        const {
+            data: { session },
+            error: sessErr,
+        } = await supabase.auth.getSession();
+
+        if (sessErr) {
+            console.log(sessErr);
+            return;
         }
+
+        // ✅ check session (not "no error")
+        if (!session) {
+            // auth-gate should redirect; bail out
+            return;
+        }
+
+        userId = session.user.id;
+
+        if (!pageKey) return;
+
+        const { data, error } = await supabase.from("notes").select("title, content").eq("user_id", userId).eq("page_key", pageKey).maybeSingle();
+
+        if (error) {
+            console.error("Fetch note error:", error);
+            return;
+        }
+
+        titleNew.innerText = data?.title || "";
+        paraNew.innerText = data?.content || "";
+
     }
-
-
 
     // save written data
     async function saveData() {
-        const updateDate = {
+
+        if (!pageKey || !userId) return;
+
+
+
+        const updateData = {
+            user_id: userId,
+            page_key: pageKey,
             title: titleNew.innerText.trim(),
-            heading: titleNew.innerText.trim(),
             content: paraNew.innerText.trim()
         };
 
-        localStorage.setItem(pageKey, JSON.stringify(updateDate));
-
         try {
-            const { data, error } = await window.supabase.from("notes").upsert({ page_key: pageKey, title: updateDate.title, content: updateDate.content }, { onConflict: "page_key" });
+            const { data, error } = await supabase.from("notes").upsert(updateData, { onConflict: 'user_id, page_key' });
 
             if (error) {
                 console.error("Supabase upsert error", error);
@@ -54,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     titleNew.addEventListener("blur", saveData);
     paraNew.addEventListener("blur", saveData);
 
-    showAllNotesBtn.addEventListener("click", () => {
+    showAllNotesBtn.addEventListener("click", async () => {
 
         const isOpen = noteSidebar.classList.contains("active"); //using .contains to check if the element has the "active" class name. For using the same button to open and close sidebar
 
@@ -62,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
             noteSidebar.classList.remove("active");
         } else {
             noteSidebar.classList.add("active");
-            renderNotesList();
+            await renderNotesList();
         }
 
     });
@@ -72,33 +102,50 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    function renderNotesList() {
+    async function renderNotesList() {
         notesList.innerHTML = "";
 
-        for (let i = 1; i <= localStorage.getItem("pageCount"); i++) {
-            const pageKey = `page-${i}`;
-            const noteData = JSON.parse(localStorage.getItem(pageKey));
+        if (!userId) {
+            const {
+                data: { session },
+            } = await window.supabase.auth.getSession();
+            if (!session) return;
+            userId = session.user.id;
+        }
 
-            if (noteData) {
-                const li = document.createElement("li");
-                const a = document.createElement("a");
-                a.textContent = noteData.title || noteData.heading;
-                a.href = `page.html?page=${pageKey}`;
+        const { data, error } = await supabase.from("notes").select("page_key, title, updated_at, created_at").eq("user_id", userId).order("updated_at", { ascending: false }).order("created_at", { ascending: false, nullFirst: false });
 
-                const delBtn = document.createElement("span");
-                delBtn.className = "delete-btn";
-                delBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
-                delBtn.title = "Delete Page";
-                delBtn.onclick = () => {
-                    localStorage.removeItem(pageKey);
-                    li.remove();
-                };
+        if (error) {
+            console.error("Fetch list error:", error);
+            return;
+        }
 
-                li.appendChild(a);
-                li.appendChild(delBtn);
-                notesList.appendChild(li);
-            }
+        for (const row of data || []) {
 
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            li.className = "page-item";
+            a.innerText = row.title || "Untitled";
+            a.href = `page.html?page=${row.page_key}`;
+
+            //delete page
+            const delBtn = document.createElement("span");
+            delBtn.className = "delete-btn";
+            delBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+            delBtn.title = "Delete Page";
+            delBtn.onclick = async () => {
+                const { error: delErr } = await supabase.from("notes").delete().eq("user_id", userId).eq("page_key", row.page_key);
+
+                if (delErr) {
+                    console.log("Delete page error", delErr);
+                    return;
+                }
+                li.remove();
+            };
+
+            li.appendChild(a);
+            li.appendChild(delBtn);
+            notesList.appendChild(li);
         }
     }
 
@@ -148,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    saveData();
+    loadNotes();
 
 });
 

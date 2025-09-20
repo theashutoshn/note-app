@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+     "dev": "http-server -p 5173 -c-1 --cors .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "index.js",
     "type": "module"
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/theashutoshn/note-app#readme",
   "dependencies": {
-    "@supabase/supabase-js": "^2.57.4"
+    "@supabase/supabase-js": "^2.57.4",
+    "http-server": "^14.1.1"
   }
 }

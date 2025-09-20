@@ -1,100 +1,111 @@
-
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-const getSupabase = () =>
-    window.supabase ??
-    (window.supabase = createClient("https://zanjbmsolrqdaikwzzpl.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbmpibXNvbHJxZGFpa3d6enBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwOTQ5MzEsImV4cCI6MjA3MzY3MDkzMX0.pBd3ArobSnWvCGOuGUEguQe5xz4O-g_gC4Ip-QocbPg"));
+const supabase = window.supabase;
 
 document.getElementById("logout-btn")?.addEventListener("click", async () => {
-    await getSupabase().auth.signOut();
+    await supabase.auth.signOut();
     location.href = "auth.html";
 });
 
+async function init() {
+    // ✅ correct destructuring
+    const {
+        data: { session },
+        error: sessErr,
+    } = await supabase.auth.getSession();
 
-function init() {
-    window.supabase = createClient("https://zanjbmsolrqdaikwzzpl.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbmpibXNvbHJxZGFpa3d6enBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwOTQ5MzEsImV4cCI6MjA3MzY3MDkzMX0.pBd3ArobSnWvCGOuGUEguQe5xz4O-g_gC4Ip-QocbPg");
+    if (sessErr) {
+        console.log(sessErr);
+        return;
+    }
 
+    // ✅ check session (not "no error")
+    if (!session) {
+        // auth-gate should redirect; bail out
+        return;
+    }
 
+    const userId = session.user.id;
 
-    let pageCount = localStorage.getItem("pageCount") || 0;
+    const list = document.getElementById("page-list");
+    const titleInput = document.getElementById("new-page-title");
 
-    function createPage() {
-        const titleInput = document.getElementById("new-page-title");
+    async function createPage() {
+        console.log("Create Page is clicked");
         const title = titleInput.value.trim();
         if (!title) return;
 
-        pageCount++;
-        localStorage.setItem("pageCount", pageCount);
-        const dateCreated = new Date();
+supabase-auth
 
-        const pageKey = `page-${pageCount}`;
-        const pageData = {
-            title: title,
-            heading: title,
-            content: "",
-            date: dateCreated
+        
+dev
 
-        };
-        localStorage.setItem(pageKey, JSON.stringify(pageData));
-
-        // timestamp
-        const pageDate = document.createElement("span");
-        pageDate.className = "page-date";
-        pageData.in
+        // (optional) capture data for debugging
+        const { data: insertData, error } = await supabase
+            .from("notes")
+            .insert({
+                user_id: userId,
+                title: title,
+                content: "",
+            }).select("page_key").single();
 
 
+        console.log({ insertData, error });
 
-        const li = document.createElement("li");
-        li.className = "page-item";
-        const a = document.createElement("a");
-        a.href = `page.html?page=${pageKey}`;
-        a.innerText = title;
+        if (error) {
+            console.log("Create Page Error", error);
+            return;
+        }
+        console.log("Insert OK:", insertData);
 
-
-
-        //delete page
-        const delBtn = document.createElement("span");
-        delBtn.className = "delete-btn";
-        delBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
-        delBtn.title = "Delete Page";
-        delBtn.onclick = () => {
-            localStorage.removeItem(pageKey);
-            li.remove();
-        };
-
-        li.appendChild(pageDate);
-        li.appendChild(a);
-        li.appendChild(delBtn);
-        document.getElementById("page-list").appendChild(li);
-
+        const pageKey = insertData.page_key;
         titleInput.value = "";
+        await loadPages();
     }
 
-    // This makes the function accessible from HTML
-    window.createPage = createPage;
+    document
+        .getElementById("add-page-btn")
+        ?.addEventListener("click", createPage);
 
-    // Load existing pages on refresh
-    const list = document.getElementById("page-list");
-    for (let i = 1; i <= pageCount; i++) {
-        const key = `page-${i}`;
-        const data = JSON.parse(localStorage.getItem(key));
-        if (data) {
+    async function loadPages() {
+        list.innerHTML = "";
+
+        const { data, error } = await supabase
+            .from("notes")
+            .select("page_key, title, updated_at, created_at")
+            .eq("user_id", userId)
+            .order("updated_at", { ascending: false })
+            .order("created_at", { ascending: false, nullsFirst: false });
+
+        if (error) {
+            console.log("Fecting page error:", error);
+            return;
+        }
+
+        for (const row of data || []) {
             const li = document.createElement("li");
             li.className = "page-item";
-            const a = document.createElement("a");
-            a.href = `page.html?page=${key}`;
-            a.innerText = data.title;
 
-            //delete page
+            const a = document.createElement("a");
+            a.href = `page.html?page=${row.page_key}`;
+            a.innerText = row.title || "Untitled";
+
             const delBtn = document.createElement("span");
             delBtn.className = "delete-btn";
             delBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
             delBtn.title = "Delete Page";
-            delBtn.onclick = () => {
-                localStorage.removeItem(key);
+            delBtn.onclick = async () => {
+                const { data: deleted, error: delErr } = await supabase
+                    .from("notes")
+                    .delete()
+                    .eq("user_id", userId)
+                    .eq("page_key", row.page_key).select();
+
+                console.log({ deleted, delErr });
+                if (delErr) {
+                    console.log("Delete page error", delErr);
+                    return;
+                }
                 li.remove();
             };
-
 
             li.appendChild(a);
             li.appendChild(delBtn);
@@ -102,16 +113,7 @@ function init() {
         }
     }
 
-
-
-
-    // function deleteAllPages() {
-    //     localStorage.removeItem("pageData");
-    // }
-
-    // window.deleteAllPages = deleteAllPages;
-
-
+    await loadPages();
 }
 
 if (document.readyState === "loading") {
@@ -119,5 +121,3 @@ if (document.readyState === "loading") {
 } else {
     init();
 }
-
-
